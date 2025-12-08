@@ -1,0 +1,36 @@
+{
+  "experiments": [
+    {
+      "name": "adam_1e-3_step",
+      "optimizer": "adam",
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "scheduler": {
+        "type": "step",
+        "step_size": 7,
+        "gamma": 0.1
+      }
+    },
+    {
+      "name": "adam_5e-4_step",
+      "optimizer": "adam",
+      "lr": 0.0005,
+      "weight_decay": 0.0001,
+      "scheduler": {
+        "type": "step",
+        "step_size": 7,
+        "gamma": 0.1
+      }
+    },
+    {
+      "name": "sgd_1e-2_cosine",
+      "optimizer": "sgd",
+      "lr": 0.01,
+      "weight_decay": 0.0005,
+      "momentum": 0.9,
+      "scheduler": {
+        "type": "cosine"
+      }
+    }
+  ]
+}
