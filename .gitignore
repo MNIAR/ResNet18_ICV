@@ -1,0 +1,10 @@
+# env
+__pycache__/
+.venv/
+
+# os files
+.DS_Store
+
+# model
+data/
+checkpoints/
