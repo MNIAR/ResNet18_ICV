@@ -10,6 +10,7 @@ from tqdm import tqdm
 from models.resnet18 import ResNet18
 from utils.device import get_device
 from utils.dataset import CustomDataset
+from utils.plot_heatmap import plot_heatmap
 
 # ====================
 # 1. Configuration
@@ -59,6 +60,9 @@ def evaluate(model, loader, criterion, device):
     correct = 0
     total = 0
 
+    all_preds = []
+    all_labels = []
+
     progress_bar = tqdm(loader, desc="Testing", leave=False)
 
     with torch.no_grad():
@@ -75,6 +79,9 @@ def evaluate(model, loader, criterion, device):
             correct += preds.eq(labels).sum().item()
             total += labels.size(0)
 
+            all_preds.extend(preds.cpu().tolist())
+            all_labels.extend(labels.cpu().tolist())
+
             progress_bar.set_postfix({
                 "loss": f"{running_loss/total:.4f}",
                 "acc": f"{correct/total:.4f}",
@@ -83,7 +90,7 @@ def evaluate(model, loader, criterion, device):
     test_loss = running_loss / total
     test_acc = correct / total
 
-    return test_loss, test_acc
+    return test_loss, test_acc, all_preds, all_labels
 
 
 # ====================
@@ -115,7 +122,8 @@ def main():
         print(f"Best val acc: {checkpoint.get('val_acc', 0.0)*100:.2f}%")
         print(f"Best val loss: {checkpoint.get('val_loss', 0.0):.4f}")
 
-        test_loss, test_acc = evaluate(model, test_loader, criterion, device)
+        test_loss, test_acc, preds, labels = evaluate(model, test_loader, criterion, device)
+        plot_heatmap(labels, preds, num_classes, exp_name)
 
         print(f"Test | loss: {test_loss:.4f}, acc: {test_acc*100:.2f}%\n")
 
